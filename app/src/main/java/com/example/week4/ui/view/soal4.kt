@@ -167,7 +167,7 @@ fun soal4View(exploreList: List<Explore>) {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = false)
 @Composable
 fun soal4Preview() {
     soal4View(DataSource().loadExplore())
