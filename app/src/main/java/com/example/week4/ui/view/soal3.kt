@@ -1,6 +1,8 @@
 package com.example.week4.ui.view
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,11 +53,17 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +74,10 @@ import com.example.week4.model.Feed
 import com.example.week4.model.Story
 import com.example.week4.model.Suggestion
 import com.example.week4.model.products
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<Suggestion>) {
     Box(
@@ -263,6 +277,7 @@ fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<S
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun soal3Preview() {
@@ -333,8 +348,11 @@ fun storyCard(Story: Story, modifier: Modifier = Modifier){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
+
+    var Expanded by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier=Modifier
@@ -373,14 +391,180 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
             Image(
                 painter = painterResource(id = R.drawable.baseline_more_horiz_24),
                 contentDescription = null,
-                modifier = Modifier.size(30.dp).rotate(90.0F),
+                modifier = Modifier
+                    .size(30.dp)
+                    .rotate(90.0F),
             )
 
 
         }
+        Image(
+            painter = painterResource(id = getResourceID(nameoffile = Feed.content)),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            modifier= Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            val context = LocalContext.current
+            IconButton(onClick = {
+                Toast.makeText(context,if(Feed.bool1){"Liked Button"}else{"Like button"}, Toast.LENGTH_SHORT).show()
+            }) {
+                if(Feed.bool1){
+                    Image(
+                        painter = painterResource(id = R.drawable.liked),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }else {
+                    Image(
+                        painter = painterResource(id = R.drawable.like),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
+            IconButton(onClick = {
+                Toast.makeText(context,"Comment Button", Toast.LENGTH_SHORT).show()
+            }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.comment),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context,"Send Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.messanger),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(200.dp))
+            IconButton(onClick = {
+                Toast.makeText(context,if(Feed.bool2){"Saved Button"}else{"Save Button"}, Toast.LENGTH_SHORT).show()
+            }) {
+                if(Feed.bool2){
+                    Image(
+                        painter = painterResource(id = R.drawable.saved_light),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }else {
+                    Image(
+                        painter = painterResource(id = R.drawable.save),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
+
+
+        }
+
+        Column(
+            modifier=Modifier.padding(10.dp, top = 0.dp)
+        ) {
+
+            TextTitleAndDesc(
+                if (Feed.like == 1) {
+                    "${Feed.like} like"
+                } else if (Feed.like >= 1000) {
+                    "${Feed.like / 1000}.${String.format("%03d", Feed.like % 1000)} likes"
+                } else {
+                    "${Feed.like} likes"
+                },
+                FontWeight.Normal,
+                14.sp,
+                Color.LightGray,
+                TextAlign.Justify,
+                1,
+                Modifier.padding(top = 0.dp)
+            )
+
+
+
+
+            TextButton(
+                onClick = { Expanded = !Expanded },
+                shape = RoundedCornerShape(0.dp),
+                modifier = Modifier
+                    .padding(0.dp)
+                    .fillMaxSize()
+                    .offset(x = (-11).dp, y = (-10).dp),
+            )
+            {
+                val text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = Bold, fontSize = 14.sp)) {
+                        append("${Feed.username} ")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = Normal, fontSize = 14.sp)) {
+                        append(Feed.caption)
+                    }
+                }
+                if (!Expanded) {
+
+                    Text(
+                        text = text,
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        maxLines = 2,
+                        color = Color.LightGray,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier=Modifier.fillMaxSize().padding(0.dp)
+                    )
+
+                } else {
+                    Text(
+                        text = text,
+                        textAlign = TextAlign.Start,
+                        fontSize = 20.sp,
+                        maxLines = 5000,
+                        color = Color.White,
+                        modifier=Modifier.fillMaxSize().padding(0.dp)
+                    )
+                }
+            }
+
+            TextTitleAndDesc(
+                formatDate(Feed.date),
+                FontWeight.Normal,
+                12.sp,
+                Color.Gray,
+                TextAlign.Justify,
+                1,
+                Modifier.padding(top = 0.dp).offset(y = (-18).dp)
+            )
+        }
+
+
+        
 
     }
 
 
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun formatDate(inputDate: String): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+
+    val date = LocalDate.parse(inputDate, inputFormatter)
+    if (date.year == 2023) {
+        return date.format(DateTimeFormatter.ofPattern("MMMM d"))
+    } else {
+        return date.format(outputFormatter)
+    }
 }
 
