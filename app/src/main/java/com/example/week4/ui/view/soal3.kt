@@ -3,8 +3,10 @@ package com.example.week4.ui.view
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,7 +83,9 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<Suggestion>) {
+fun soal3View(storyList: List<Story>, feedList: List<Feed>, suggestionList: List<Suggestion>) {
+
+    var counter:Int =6
     Box(
 
         modifier = Modifier
@@ -92,7 +98,7 @@ fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<S
         LazyVerticalGrid(
             columns = GridCells.Fixed(1)
         ) {
-            item{
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -109,7 +115,7 @@ fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<S
                             .width(150.dp)
 
                     )
-                    
+
                     Spacer(modifier = Modifier.width(100.dp))
 
                     Image(
@@ -127,165 +133,193 @@ fun soal3View(storyList: List<Story>,feedList: List<Feed>,suggestionList: List<S
                 }
             }
             item {
-            LazyRow(modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 10.dp)
-            ){
-                item{
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        val context = LocalContext.current
-                        IconButton(
-                            onClick = {
-                                Toast.makeText(context, "Your Story", Toast.LENGTH_SHORT).show()
-                            },
-                            modifier = Modifier
-                                .height(120.dp)
-                                .width(105.dp)
+                LazyRow(
+                    modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 10.dp)
+                ) {
+                    item {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ){
-
-
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier
-                                        .padding(8.dp, bottom = 2.dp)
-                                        .fillMaxWidth()
-
+                            val context = LocalContext.current
+                            IconButton(
+                                onClick = {
+                                    Toast.makeText(context, "Your Story", Toast.LENGTH_SHORT).show()
+                                },
+                                modifier = Modifier
+                                    .height(120.dp)
+                                    .width(105.dp)
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.story),
-                                        contentDescription = null,
+
+
+                                    Box(
+                                        contentAlignment = Alignment.Center,
                                         modifier = Modifier
-                                            .size(90.dp),
-                                        contentScale = ContentScale.Crop
+                                            .padding(8.dp, bottom = 2.dp)
+                                            .fillMaxWidth()
 
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.story),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(90.dp),
+                                            contentScale = ContentScale.Crop
+
+                                        )
+                                        Image(
+                                            painter = painterResource(id = getResourceID(nameoffile = "profile_12")),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .clip(shape = CircleShape)
+                                                .size(80.dp),
+                                            contentScale = ContentScale.Crop
+
+
+                                        )
+                                    }
+                                    TextTitleAndDesc(
+                                        "Your Story",
+                                        FontWeight.Normal,
+                                        14.sp,
+                                        Color.LightGray,
+                                        TextAlign.Justify,
+                                        1,
+                                        Modifier.padding(top = 0.dp)
                                     )
-                                    Image(
-                                        painter = painterResource(id = getResourceID(nameoffile = "profile_12")),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .clip(shape = CircleShape)
-                                            .size(80.dp),
-                                        contentScale = ContentScale.Crop
 
-
-                                    )
                                 }
-                                TextTitleAndDesc(
-                                    "Your Story",
-                                    FontWeight.Normal,
-                                    14.sp,
-                                    Color.LightGray,
-                                    TextAlign.Justify,
-                                    1,
-                                    Modifier.padding(top = 0.dp)
-                                )
 
                             }
+                        }
+                    }
+                    items(storyList) {
+                        storyCard(
+                            it,
+                            Modifier
+                                .padding()
+                        )
+                    }
 
+                }
+            }
+
+
+
+            if (counter == 6) {
+                item {
+                    LazyRow(
+                        modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 10.dp)
+                    ) {
+                        items(suggestionList) {
+                            suggestionCard(
+                                it,
+                                Modifier
+                                    .padding()
+                            )
                         }
                     }
                 }
-                items(storyList){
-                    storyCard(it,
-                        Modifier
-                            .padding())
-                }
-
-            }
+                counter = 1
+            } else {
+                counter += 1
             }
 
-            items(feedList){
+
+
+            items(feedList) {
                 feedCard(it, modifier = Modifier)
             }
 
 
-
         }
 
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter){
-            Row(
-                modifier = Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                    .background(Color.Black),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
 
-            ) {
-                val context = LocalContext.current
-                IconButton(onClick = {
-                    Toast.makeText(context,"Home Button", Toast.LENGTH_SHORT).show()
-                }) {
-                    Icon(
-                        Icons.Filled.Home,
-                        contentDescription = null,
-                        tint = Color.LightGray,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    Toast.makeText(context,"Search Button", Toast.LENGTH_SHORT).show()
-                }) {
-                    Icon(
-                        Icons.Filled.Search,
-                        contentDescription = null,
-                        tint = Color.LightGray,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    Toast.makeText(context,"Post Button", Toast.LENGTH_SHORT).show()
-                }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.post),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    Toast.makeText(context,"Reels Button", Toast.LENGTH_SHORT).show()
-                }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.reels),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-                IconButton(onClick = {
-                    Toast.makeText(context,"Account Button", Toast.LENGTH_SHORT).show()
-                }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.account),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-
-
-
-
-            }
-        }
     }
 
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Row(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .background(Color.Black),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ) {
+            val context = LocalContext.current
+            IconButton(onClick = {
+                Toast.makeText(context, "Home Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    Icons.Filled.Home,
+                    contentDescription = null,
+                    tint = Color.LightGray,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Search Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Icon(
+                    Icons.Filled.Search,
+                    contentDescription = null,
+                    tint = Color.LightGray,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Post Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.post),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Reels Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.reels),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            IconButton(onClick = {
+                Toast.makeText(context, "Account Button", Toast.LENGTH_SHORT).show()
+            }) {
+                Image(
+                    painter = painterResource(id = R.drawable.account),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
 
 
-
+        }
+    }
 }
+
+
+
+
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun soal3Preview() {
-    soal3View(DataSource().loadStory(),DataSource().loadFeed(),DataSource().loadSuggestion())
+    soal3View(DataSource().loadStory(), DataSource().loadFeed(), DataSource().loadSuggestion())
 }
 
 @Composable
-fun storyCard(Story: Story, modifier: Modifier = Modifier){
+fun storyCard(Story: Story, modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -301,7 +335,7 @@ fun storyCard(Story: Story, modifier: Modifier = Modifier){
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
 
 
                 Box(
@@ -350,21 +384,21 @@ fun storyCard(Story: Story, modifier: Modifier = Modifier){
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
+fun feedCard(Feed: Feed, modifier: Modifier = Modifier) {
 
     var Expanded by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier=Modifier
+        modifier = Modifier
             .fillMaxWidth()
     ) {
-        Row (
-            modifier= Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Image(
                 painter = painterResource(id = getResourceID(nameoffile = Feed.avatar)),
                 contentDescription = null,
@@ -385,7 +419,7 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
                 1,
                 Modifier.padding(top = 0.dp)
             )
-            
+
             Spacer(modifier = Modifier.width(200.dp))
 
             Image(
@@ -407,23 +441,29 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
         )
 
         Row(
-            modifier= Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             val context = LocalContext.current
             IconButton(onClick = {
-                Toast.makeText(context,if(Feed.bool1){"Liked Button"}else{"Like button"}, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context, if (Feed.bool1) {
+                        "Liked Button"
+                    } else {
+                        "Like button"
+                    }, Toast.LENGTH_SHORT
+                ).show()
             }) {
-                if(Feed.bool1){
+                if (Feed.bool1) {
                     Image(
                         painter = painterResource(id = R.drawable.liked),
                         contentDescription = null,
                         modifier = Modifier.size(30.dp)
                     )
-                }else {
+                } else {
                     Image(
                         painter = painterResource(id = R.drawable.like),
                         contentDescription = null,
@@ -432,16 +472,16 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
                 }
             }
             IconButton(onClick = {
-                Toast.makeText(context,"Comment Button", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Comment Button", Toast.LENGTH_SHORT).show()
             }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.comment),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
+                Image(
+                    painter = painterResource(id = R.drawable.comment),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp)
+                )
             }
             IconButton(onClick = {
-                Toast.makeText(context,"Send Button", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Send Button", Toast.LENGTH_SHORT).show()
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.messanger),
@@ -451,15 +491,21 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
             }
             Spacer(modifier = Modifier.width(200.dp))
             IconButton(onClick = {
-                Toast.makeText(context,if(Feed.bool2){"Saved Button"}else{"Save Button"}, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context, if (Feed.bool2) {
+                        "Saved Button"
+                    } else {
+                        "Save Button"
+                    }, Toast.LENGTH_SHORT
+                ).show()
             }) {
-                if(Feed.bool2){
+                if (Feed.bool2) {
                     Image(
                         painter = painterResource(id = R.drawable.saved_light),
                         contentDescription = null,
                         modifier = Modifier.size(30.dp)
                     )
-                }else {
+                } else {
                     Image(
                         painter = painterResource(id = R.drawable.save),
                         contentDescription = null,
@@ -472,7 +518,7 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
         }
 
         Column(
-            modifier=Modifier.padding(10.dp, top = 0.dp)
+            modifier = Modifier.padding(10.dp, top = 0.dp)
         ) {
 
             TextTitleAndDesc(
@@ -520,7 +566,9 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
                         maxLines = 2,
                         color = Color.LightGray,
                         overflow = TextOverflow.Ellipsis,
-                        modifier=Modifier.fillMaxSize().padding(0.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(0.dp)
                     )
 
                 } else {
@@ -530,7 +578,9 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
                         fontSize = 20.sp,
                         maxLines = 5000,
                         color = Color.White,
-                        modifier=Modifier.fillMaxSize().padding(0.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(0.dp)
                     )
                 }
             }
@@ -542,14 +592,95 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier){
                 Color.Gray,
                 TextAlign.Justify,
                 1,
-                Modifier.padding(top = 0.dp).offset(y = (-18).dp)
+                Modifier
+                    .padding(top = 0.dp)
+                    .offset(y = (-18).dp)
             )
         }
 
 
-        
-
     }
+
+
+}
+
+@Composable
+fun suggestionCard(Suggestion: Suggestion, modifier: Modifier = Modifier) {
+
+        Card(
+            modifier= Modifier
+                .width(175.dp)
+                .height(250.dp)
+                .padding(horizontal = 15.dp, vertical = 10.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(Color(36, 36, 36)),
+            border = BorderStroke(1.dp, Color.LightGray),
+
+
+        ) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_close_24),
+                    contentDescription = "Close",
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(y=(-8).dp,x=(-2).dp),
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+
+                    Image(
+                        painter = painterResource(id = getResourceID(nameoffile = Suggestion.avatar)),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(shape = CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    
+                    TextTitleAndDesc(
+                        text = Suggestion.username,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.LightGray,
+                        textAlign = TextAlign.Center,
+                        maxLine =1 ,
+                        modifier = Modifier.padding(top=10.dp, bottom = 6.dp)
+                    )
+                    val context = LocalContext.current
+
+                    Button(
+                        onClick = {
+                            Toast.makeText(context, "Follow Button", Toast.LENGTH_SHORT).show()
+                        },
+                        colors = ButtonDefaults.buttonColors( Color(36,160,237)),
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        TextTitleAndDesc(
+                            text = "Follow",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            maxLine =1 ,
+                            modifier = Modifier.padding()
+                        )
+                    }
+                }
+            }
+        }
+
+
+
+
 
 
 }
