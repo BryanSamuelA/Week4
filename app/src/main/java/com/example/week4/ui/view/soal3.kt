@@ -208,30 +208,38 @@ fun soal3View(storyList: List<Story>, feedList: List<Feed>, suggestionList: List
 
 
 
-            if (counter == 6) {
+
+
+
+            for (feed in feedList){
                 item {
-                    LazyRow(
-                        modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 10.dp)
-                    ) {
-                        items(suggestionList) {
-                            suggestionCard(
-                                it,
-                                Modifier
-                                    .padding()
-                            )
+                    feedCard(feed, modifier = Modifier)
+                }
+                if (counter == 6) {
+                    item {
+                        LazyRow(
+                            modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 10.dp)
+                        ) {
+                            items(suggestionList) {
+                                suggestionCard(
+                                    it,
+                                    Modifier
+                                        .padding()
+                                )
+                            }
                         }
                     }
+                    counter = 1
+                } else {
+                    counter += 1
                 }
-                counter = 1
-            } else {
-                counter += 1
             }
 
 
 
-            items(feedList) {
-                feedCard(it, modifier = Modifier)
-            }
+
+
+
 
 
         }
@@ -448,16 +456,18 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val context = LocalContext.current
+            var liked by remember { mutableStateOf(Feed.bool1) }
             IconButton(onClick = {
+                liked=!liked
                 Toast.makeText(
-                    context, if (Feed.bool1) {
+                    context, if (liked) {
                         "Liked Button"
                     } else {
                         "Like button"
                     }, Toast.LENGTH_SHORT
                 ).show()
             }) {
-                if (Feed.bool1) {
+                if (liked) {
                     Image(
                         painter = painterResource(id = R.drawable.liked),
                         contentDescription = null,
@@ -490,16 +500,18 @@ fun feedCard(Feed: Feed, modifier: Modifier = Modifier) {
                 )
             }
             Spacer(modifier = Modifier.width(200.dp))
+            var saved by remember { mutableStateOf(Feed.bool2) }
             IconButton(onClick = {
+                saved=!saved
                 Toast.makeText(
-                    context, if (Feed.bool2) {
+                    context, if (saved) {
                         "Saved Button"
                     } else {
                         "Save Button"
                     }, Toast.LENGTH_SHORT
                 ).show()
             }) {
-                if (Feed.bool2) {
+                if (saved) {
                     Image(
                         painter = painterResource(id = R.drawable.saved_light),
                         contentDescription = null,
@@ -628,7 +640,7 @@ fun suggestionCard(Suggestion: Suggestion, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .padding(4.dp)
                         .align(Alignment.TopEnd)
-                        .offset(y=(-8).dp,x=(-2).dp),
+                        .offset(y = (-8).dp, x = (-2).dp),
                 )
 
                 Column(
