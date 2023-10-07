@@ -39,6 +39,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -80,10 +81,11 @@ fun soal2View(categoriesList: List<categories>,productsList: List<products>) {
             Spacer(modifier = Modifier.width(190.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.baseline_density_medium_24black),
+                painter = painterResource(id = R.drawable.baseline_more_horiz_24blc),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
+                    .rotate(90.0f)
                     .weight(1f)
             )
 
@@ -161,6 +163,70 @@ fun soal2View(categoriesList: List<categories>,productsList: List<products>) {
     }
 }
 
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun soal2Preview(){
+    soal2View(dummy_data().get_data_tokopedia_category(),dummy_data().get_data_tokopedia_product())
+}
+
+
+@Composable
+fun CategoriesCard(categories: categories, modifier: Modifier = Modifier) {
+
+
+    Card(
+        modifier = modifier
+            .height(200.dp)
+            .width(175.dp)
+            .padding(start = 20.dp, end = 0.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(Color.White)
+
+
+
+
+    ) {
+        Column(modifier= Modifier.fillMaxSize(),
+
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Image(
+                painter = painterResource(id = categories.image_path),
+                contentDescription = "categories image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+                contentScale = ContentScale.FillBounds
+            )
+            TextTitleAndDesc(
+                categories.category_name,
+                FontWeight.Bold,
+                26.sp,
+                Color.Black,
+                TextAlign.Center,
+                1,
+                Modifier.padding(top = 10.dp)
+            )
+            TextTitleAndDesc(
+                "${categories.number_of_items} Products",
+                FontWeight.Normal,
+                16.sp,
+                Color.Black,
+                TextAlign.Center,
+                1,
+                Modifier.padding()
+            )
+
+
+
+
+
+        }
+    }
+}
 @Composable
 fun ProductCard(products:products,modifier: Modifier=Modifier){
 
@@ -237,70 +303,10 @@ fun ProductCard(products:products,modifier: Modifier=Modifier){
 
 
 
-@Composable
-fun CategoriesCard(categories: categories, modifier: Modifier = Modifier) {
-
-
-    Card(
-        modifier = modifier
-            .height(200.dp)
-            .width(175.dp)
-            .padding(start = 20.dp, end = 0.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(Color.White)
-
-
-
-
-    ) {
-        Column(modifier= Modifier.fillMaxSize(),
-
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-                Image(
-                    painter = painterResource(id = categories.image_path),
-                    contentDescription = "categories image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp),
-                    contentScale = ContentScale.FillBounds
-                )
-            TextTitleAndDesc(
-                categories.category_name,
-                FontWeight.Bold,
-                26.sp,
-                Color.Black,
-                TextAlign.Center,
-                1,
-                Modifier.padding(top = 10.dp)
-            )
-            TextTitleAndDesc(
-                "${categories.number_of_items} Products",
-                FontWeight.Normal,
-                16.sp,
-                Color.Black,
-                TextAlign.Center,
-                1,
-                Modifier.padding()
-            )
-
-
-
-
-
-        }
-    }
-}
 
 
 
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun soal2Preview(){
-    soal2View(dummy_data().get_data_tokopedia_category(),dummy_data().get_data_tokopedia_product())
-}
+

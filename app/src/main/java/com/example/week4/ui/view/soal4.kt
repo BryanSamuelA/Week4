@@ -190,13 +190,13 @@ fun ExploreCard(Exlpore: Explore, modifier: Modifier = Modifier) {
         onClick = {
             Toast.makeText(context, Exlpore.idString, Toast.LENGTH_SHORT).show()
         },
-        modifier = Modifier.size(cardSize) // Set the size of the IconButton
+        modifier = Modifier.size(cardSize)
     ) {
         Image(
             painter = painterResource(id = getResourceID(nameoffile = Exlpore.idString)),
             contentDescription = "",
-            modifier = Modifier.fillMaxSize(), // Fill the available space within the IconButton
-            contentScale = ContentScale.FillBounds
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
     }
 }

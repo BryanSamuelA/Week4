@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -59,12 +60,13 @@ fun soal1View(line_chatList: List<line_chat>) {
             Spacer(modifier = Modifier.width(220.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.baseline_density_medium_24),
+                painter = painterResource(id = R.drawable.baseline_more_horiz_24),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(40.dp).rotate(90.0F)
                     .weight(1f)
             )
+
 
 
 
@@ -126,7 +128,7 @@ fun line_chatCard(chat: line_chat, modifier: Modifier = Modifier) {
                 FontWeight.Normal,
                 14.sp,
                 Color.White,
-                TextAlign.Justify,
+                TextAlign.Left,
                 2,
                 Modifier.padding(bottom = 0.dp)
             )
@@ -159,7 +161,7 @@ fun TextTitleAndDesc(
     fontSize: TextUnit,
     color: Color,
     textAlign: TextAlign,
-    maxLine: Int, // Add the maxLine parameter
+    maxLine: Int,
     modifier: Modifier
 ) {
     Text(
@@ -168,7 +170,7 @@ fun TextTitleAndDesc(
         fontSize = fontSize,
         color = color,
         textAlign = textAlign,
-        maxLines = maxLine, // Set the maxLines parameter
+        maxLines = maxLine,
         modifier = modifier
     )
 }
