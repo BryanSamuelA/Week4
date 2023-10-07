@@ -237,7 +237,9 @@ fun soal3View(storyList: List<Story>, feedList: List<Feed>, suggestionList: List
 
 
 
-
+            item(span={GridItemSpan(3) }){
+                Spacer(modifier = Modifier.height(50.dp))
+            }
 
 
 
@@ -245,7 +247,10 @@ fun soal3View(storyList: List<Story>, feedList: List<Feed>, suggestionList: List
         }
 
 
+
     }
+
+
 
     Box(
         modifier = Modifier.fillMaxSize(),
